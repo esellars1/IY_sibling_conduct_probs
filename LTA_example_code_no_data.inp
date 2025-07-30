@@ -1,0 +1,50 @@
+Title: Two class LTA, increased random starts
+Data:
+File = LTA_data.dat;
+Variable:
+Names =   index_1 sib_1 index_2 sib_2 Cndtn Trial;
+Missing = all (-999);
+Usevariable = Cndtn index_1 index_2 sib_1 sib_2;
+Classes = cg (2) c1 (2) c2 (2);
+Knownclass = cg (Cndtn = 0 Cndtn = 1);
+Cluster = Trial;
+Analysis:
+Type = complex mixture; 
+Starts = 200 100;
+Model:
+    %OVERALL% 
+    c1 c2 ON cg;
+Model cg:
+    %cg#1%
+    c2 ON c1;
+    %cg#2%
+    c2 ON c1;
+Model c1: !only variance is constrained between classes and waves (not means)
+    %c1#1%
+    [index_1];
+    [sib_1]; 
+    index_1 (2);
+    sib_1 (3);
+    %c1#2%
+    [index_1];
+    [sib_1]; 
+    index_1 (2);
+    sib_1 (3);
+  
+    
+Model c2:
+    %c2#1%
+    [index_2];
+    [sib_2]; 
+    index_2 (2);
+    sib_2 (3);
+    %c2#2%
+    [index_2];
+    [sib_2];
+    index_2 (2);
+    sib_2 (3);
+ 
+Output:SAMPSTAT tech11 tech15 tech4;  !in output, for condition 1= control 2=intervention
+
+SAVEDATA: FILE = LTA_2CLASS_PROB.dat;
+	SAVE = CPROBABILITIES;
